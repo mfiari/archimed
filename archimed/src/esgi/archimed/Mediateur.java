@@ -7,6 +7,9 @@
 package esgi.archimed;
 
 import esgi.archimed.adaptaters.Adapter;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +18,32 @@ import java.util.List;
  */
 public class Mediateur {
     
-    private List<Adapter> adapters;
+    private final List<Adapter> adapters;
+    private final PropertyChangeSupport pcs;
+    
+    public Mediateur () {
+        this.adapters = new ArrayList<>();
+        this.pcs = new PropertyChangeSupport(this);
+    }
+    
+    public void addAdapter (Adapter adapter) {
+        this.adapters.add(adapter);
+        this.pcs.firePropertyChange("addAdapter", adapter, null);
+    }
+    
+    public void removeAdapter (int index) {
+        this.adapters.remove(index);
+        this.pcs.firePropertyChange("removeAdapter", null, null);
+    }
+    
+    public void removeAdapter (Adapter adapter) {
+        this.adapters.remove(adapter);
+        this.pcs.firePropertyChange("removeAdapter", null, null);
+    }
+    
+    public void addListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
     
     
 }

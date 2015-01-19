@@ -6,17 +6,105 @@
 
 package esgi.archimed.ui;
 
+import esgi.archimed.Mediateur;
+import esgi.archimed.adaptaters.Adapter;
+import esgi.archimed.adaptaters.XMLAdapter;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 /**
  *
  * @author mike
  */
 public class Window extends javax.swing.JFrame {
+    
+    private final Mediateur mediateur;
+    private final Color[] colors = {Color.BLUE, Color.GREEN, Color.ORANGE, Color.RED, Color.YELLOW};
+    private final JPanel adapter;
+    private final List<AdapterView> adapterViews;
 
     /**
      * Creates new form Window
      */
     public Window() {
         initComponents();
+        this.adapterViews = new ArrayList<>();
+        this.adapter = new JPanel();
+        this.adapterPanel.setViewportView(this.adapter);
+        this.mediateur = new Mediateur();
+        this.mediateur.addListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                switch (evt.getPropertyName()) {
+                    case "addAdapter":
+                        addAdapter((Adapter)evt.getOldValue());
+                        break;
+                    case "removeAdapter":
+                        removeAdapter();
+                        break;
+                }
+            }
+        });
+    }
+    
+    private class AdapterView {
+        
+        private final Adapter adapter;
+        private final JPanel panel;
+        private final Color color;
+        
+        public AdapterView (Adapter adapter, JPanel panel, Color color) {
+            this.adapter = adapter;
+            this.panel = panel;
+            this.color = color;
+        }
+        
+        public Color getColor () {
+            return this.color;
+        }
+        
+    }
+    
+    private void addAdapter(Adapter adapter) {
+        String name = "adapter";
+        if (adapter instanceof XMLAdapter) {
+            name += " XML";
+        }
+        JPanel panel = new JPanel(new GridLayout(2, 1));
+        JPanel panelName = new JPanel ();
+        JLabel labelName = new JLabel(name);
+        panelName.add(labelName);
+        int indice = 0;
+        if (!this.adapterViews.isEmpty()) {
+            Color color = this.adapterViews.get(this.adapterViews.size()-1).getColor();
+            for (int i = 0 ; i < this.colors.length ; i++) {
+                if (this.colors[i].equals(color)) {
+                    if (i < this.colors.length -1) {
+                        indice = i+1;
+                        break;
+                    }
+                }
+            }
+        }
+        panelName.setBackground(this.colors[indice]);
+        JLabel labelEtat = new JLabel("actif");
+        labelEtat.setForeground(Color.GREEN);
+        panel.add(panelName);
+        panel.add(labelEtat);
+        this.adapter.add(panel);
+        this.adapter.repaint();
+        this.adapter.validate();
+        this.adapterViews.add(new AdapterView(adapter, panel, this.colors[indice]));
+    }
+    
+    private void removeAdapter() {
     }
 
     /**
@@ -28,16 +116,26 @@ public class Window extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         sourcePanel = new javax.swing.JScrollPane();
         adapterPanel = new javax.swing.JScrollPane();
         mediateurPanel = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Archimed");
 
-        jLabel1.setText("Archimed");
+        adapterPanel.setOpaque(false);
 
         jTextField1.setText("Request");
 
@@ -54,7 +152,7 @@ public class Window extends javax.swing.JFrame {
             .addGroup(mediateurPanelLayout.createSequentialGroup()
                 .addGap(64, 64, 64)
                 .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(556, Short.MAX_VALUE))
         );
         mediateurPanelLayout.setVerticalGroup(
             mediateurPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -66,14 +164,64 @@ public class Window extends javax.swing.JFrame {
                 .addGap(8, 8, 8))
         );
 
+        jMenu1.setText("File");
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setText("Open");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenuItem1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jMenuItem1KeyPressed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem2.setText("Save");
+        jMenu1.add(jMenuItem2);
+
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
+        jMenuItem3.setText("Exit");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+
+        jMenuItem4.setText("Add adaptater");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem4);
+
+        jMenuItem5.setText("Delete adaptater");
+        jMenu2.add(jMenuItem5);
+
+        jMenuItem6.setText("Add datasource");
+        jMenu2.add(jMenuItem6);
+
+        jMenuItem7.setText("Delete datasource");
+        jMenu2.add(jMenuItem7);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(300, 300, 300)
-                .addComponent(jLabel1)
-                .addContainerGap(323, Short.MAX_VALUE))
             .addComponent(sourcePanel)
             .addComponent(adapterPanel)
             .addComponent(mediateurPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -81,19 +229,34 @@ public class Window extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(31, 31, 31)
                 .addComponent(sourcePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(adapterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(mediateurPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMenuItem1KeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1KeyPressed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        Adapter adp = new XMLAdapter();
+        this.mediateur.addAdapter(adp);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        this.processWindowEvent( new WindowEvent( this, WindowEvent.WINDOW_CLOSING) );
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -111,19 +274,14 @@ public class Window extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Window().setVisible(true);
             }
@@ -133,7 +291,16 @@ public class Window extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane adapterPanel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel mediateurPanel;
     private javax.swing.JScrollPane sourcePanel;
