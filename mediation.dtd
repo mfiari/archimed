@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!ELEMENT Mediation (Mediateur)>
+<!ELEMENT Mediateur (adresse, langageMediation, (Adaptateur)+)>
+<!ELEMENT adresse  (#PCDATA)>
+<!ELEMENT langageMediation (#PCDATA)>
+
+<!ELEMENT Adaptateur (typeDonnee, adresse, (Source)+)>
+<!ELEMENT Source (typeDonnee, adresse, (login)?, (motDePasse)?, (port)?)>
+<!ELEMENT typeDonnee    (#PCDATA)>
+<!ELEMENT login    (#PCDATA)>
+<!ELEMENT motDePasse    (#PCDATA)>
+<!ELEMENT port    (#PCDATA)>
+
+
+
