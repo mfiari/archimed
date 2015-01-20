@@ -51,7 +51,7 @@ public class CreateAdapter extends javax.swing.JDialog {
     private void initComponents() {
 
         comboBoxAdapter = new javax.swing.JComboBox();
-        ButtonOk = new javax.swing.JButton();
+        ButtonCreate = new javax.swing.JButton();
         ButtonCancel = new javax.swing.JButton();
         textFieldName = new javax.swing.JTextField();
 
@@ -61,10 +61,10 @@ public class CreateAdapter extends javax.swing.JDialog {
 
         comboBoxAdapter.setToolTipText("");
 
-        ButtonOk.setText("Ok");
-        ButtonOk.addActionListener(new java.awt.event.ActionListener() {
+        ButtonCreate.setText("Create");
+        ButtonCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonOkActionPerformed(evt);
+                ButtonCreateActionPerformed(evt);
             }
         });
 
@@ -81,20 +81,15 @@ public class CreateAdapter extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(ButtonOk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(ButtonCancel)
-                .addGap(35, 35, 35))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(74, 74, 74)
-                        .addComponent(textFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(comboBoxAdapter, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ButtonCreate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(ButtonCancel))
+                    .addComponent(comboBoxAdapter, 0, 233, Short.MAX_VALUE)
+                    .addComponent(textFieldName))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -102,19 +97,19 @@ public class CreateAdapter extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(textFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addGap(45, 45, 45)
                 .addComponent(comboBoxAdapter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ButtonCancel)
-                    .addComponent(ButtonOk))
+                    .addComponent(ButtonCreate))
                 .addGap(25, 25, 25))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ButtonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonOkActionPerformed
+    private void ButtonCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonCreateActionPerformed
         String item = this.comboBoxAdapter.getSelectedItem().toString();
         Adapter adp;
         String name = this.textFieldName.getText();
@@ -139,7 +134,7 @@ public class CreateAdapter extends javax.swing.JDialog {
         }
         this.mediateur.addAdapter(adp);
         dispose();
-    }//GEN-LAST:event_ButtonOkActionPerformed
+    }//GEN-LAST:event_ButtonCreateActionPerformed
 
     private void ButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonCancelActionPerformed
         dispose();
@@ -148,7 +143,7 @@ public class CreateAdapter extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonCancel;
-    private javax.swing.JButton ButtonOk;
+    private javax.swing.JButton ButtonCreate;
     private javax.swing.JComboBox comboBoxAdapter;
     private javax.swing.JTextField textFieldName;
     // End of variables declaration//GEN-END:variables

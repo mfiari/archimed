@@ -37,6 +37,7 @@ public class Window extends javax.swing.JFrame {
      */
     public Window() {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.adapterViews = new ArrayList<>();
         this.datasourceViews = new ArrayList<>();
         this.adapter = new JPanel();
@@ -353,8 +354,7 @@ public class Window extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        RemoveDatasource removeDatasource = new RemoveDatasource(this, true);
-        removeDatasource.setVisible(true);
+        new RemoveDatasource(this, this.mediateur).setVisible(true);
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     /**

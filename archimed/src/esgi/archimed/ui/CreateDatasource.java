@@ -15,6 +15,8 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
@@ -23,6 +25,7 @@ import javax.swing.JOptionPane;
 public class CreateDatasource extends javax.swing.JDialog {
     
     private final Mediateur mediateur;
+    private final JPanel panelDatasource;
 
     /**
      * Creates new form CreateDatasource
@@ -32,6 +35,8 @@ public class CreateDatasource extends javax.swing.JDialog {
     public CreateDatasource(java.awt.Frame parent, Mediateur mediateur) {
         super(parent, true);
         initComponents();
+        this.panelDatasource = new JPanel();
+        this.scrollPaneDatasource.setViewportView(this.panelDatasource);
         this.mediateur = mediateur;
         for (Adapter adapter : this.mediateur.getAdapters()) {
             this.comboBoxAdapter.addItem(adapter.getName());
@@ -57,18 +62,25 @@ public class CreateDatasource extends javax.swing.JDialog {
 
         comboBoxAdapter = new javax.swing.JComboBox();
         comboBoxDatasource = new javax.swing.JComboBox();
-        buttonOk = new javax.swing.JButton();
+        buttonCreate = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
         textFieldName = new javax.swing.JTextField();
+        scrollPaneDatasource = new javax.swing.JScrollPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Create Datasource");
         setResizable(false);
 
-        buttonOk.setText("Ok");
-        buttonOk.addActionListener(new java.awt.event.ActionListener() {
+        comboBoxDatasource.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonOkActionPerformed(evt);
+                comboBoxDatasourceActionPerformed(evt);
+            }
+        });
+
+        buttonCreate.setText("Create");
+        buttonCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonCreateActionPerformed(evt);
             }
         });
 
@@ -86,37 +98,48 @@ public class CreateDatasource extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(83, 83, 83)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(buttonOk)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buttonCancel))
-                    .addComponent(comboBoxAdapter, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboBoxDatasource, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(91, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(scrollPaneDatasource))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(63, 63, 63)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(buttonCreate)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
+                                .addComponent(buttonCancel))
+                            .addComponent(comboBoxDatasource, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(comboBoxAdapter, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(64, 64, 64)
+                .addComponent(textFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(69, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(25, Short.MAX_VALUE)
                 .addComponent(textFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
+                .addComponent(scrollPaneDatasource, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(comboBoxAdapter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addGap(37, 37, 37)
                 .addComponent(comboBoxDatasource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonOk)
+                    .addComponent(buttonCreate)
                     .addComponent(buttonCancel))
-                .addGap(32, 32, 32))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOkActionPerformed
+    private void buttonCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCreateActionPerformed
         int index = this.comboBoxAdapter.getSelectedIndex();
         Adapter adapter = this.mediateur.getAdapters().get(index);
         String item = this.comboBoxDatasource.getSelectedItem().toString();
@@ -147,18 +170,60 @@ public class CreateDatasource extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "This datasource is not compitible with this adapter.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         
-    }//GEN-LAST:event_buttonOkActionPerformed
+    }//GEN-LAST:event_buttonCreateActionPerformed
 
     private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed
         dispose();
     }//GEN-LAST:event_buttonCancelActionPerformed
 
+    private void comboBoxDatasourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxDatasourceActionPerformed
+        String item = this.comboBoxDatasource.getSelectedItem().toString();
+        if (this.panelDatasource.getComponentCount() > 0) {
+            this.panelDatasource.removeAll();
+            this.panelDatasource.repaint();
+            this.panelDatasource.validate();
+        }
+        switch (item) {
+            case "XML datasource" :
+                JTextField urlTextField = new JTextField("url");
+                urlTextField.setToolTipText("url");
+                urlTextField.setPreferredSize(new Dimension(150, 30));
+                this.panelDatasource.add(urlTextField);
+                break;
+            case "SQL datasource" :
+                int width = (this.panelDatasource.getWidth() / 4)-10;
+                int heigth = 30;
+                JTextField hostTextField = new JTextField("host");
+                hostTextField.setToolTipText("host");
+                hostTextField.setPreferredSize(new Dimension(width, heigth));
+                JTextField portTextField = new JTextField("port");
+                portTextField.setToolTipText("port");
+                portTextField.setPreferredSize(new Dimension(width, heigth));
+                JTextField loginTextField = new JTextField("login");
+                loginTextField.setToolTipText("login");
+                loginTextField.setPreferredSize(new Dimension(width, heigth));
+                JTextField passwordTextField = new JTextField("password");
+                passwordTextField.setToolTipText("password");
+                passwordTextField.setPreferredSize(new Dimension(width, heigth));
+                this.panelDatasource.add(hostTextField);
+                this.panelDatasource.add(portTextField);
+                this.panelDatasource.add(loginTextField);
+                this.panelDatasource.add(passwordTextField);
+                break;
+            default : 
+                break;
+        }
+        this.panelDatasource.repaint();
+        this.panelDatasource.validate();
+    }//GEN-LAST:event_comboBoxDatasourceActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonCancel;
-    private javax.swing.JButton buttonOk;
+    private javax.swing.JButton buttonCreate;
     private javax.swing.JComboBox comboBoxAdapter;
     private javax.swing.JComboBox comboBoxDatasource;
+    private javax.swing.JScrollPane scrollPaneDatasource;
     private javax.swing.JTextField textFieldName;
     // End of variables declaration//GEN-END:variables
 }

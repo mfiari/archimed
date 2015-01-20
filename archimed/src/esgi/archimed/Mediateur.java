@@ -37,6 +37,7 @@ public class Mediateur {
     
     public void removeAdapter (int index) {
         Adapter adapter = this.adapters.remove(index);
+        adapter.removeAllDatasource();
         this.pcs.firePropertyChange("removeAdapter", adapter, null);
     }
     

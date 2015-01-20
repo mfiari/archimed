@@ -6,20 +6,41 @@
 
 package esgi.archimed.ui;
 
+import esgi.archimed.Mediateur;
+import esgi.archimed.adaptaters.Adapter;
+import esgi.archimed.datasources.Datasource;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+
 /**
  *
  * @author mike
  */
 public class RemoveDatasource extends javax.swing.JDialog {
+    
+    private final Mediateur mediateur;
 
     /**
      * Creates new form RemoveDatasource
      * @param parent
-     * @param modal
+     * @param mediateur
      */
-    public RemoveDatasource(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public RemoveDatasource(java.awt.Frame parent, Mediateur mediateur) {
+        super(parent, true);
         initComponents();
+        this.mediateur = mediateur;
+        for (Adapter adapter : this.mediateur.getAdapters()) {
+            for (Datasource datasource : adapter.getDatasources()) {
+                this.comboBoxDatasource.addItem(datasource.getName());
+            }
+        }
+        Rectangle parentBounds = parent.getBounds();
+        Dimension size = getSize();
+        // Center in the parent
+        int x = Math.max(0, parentBounds.x + (parentBounds.width - size.width) / 2);
+        int y = Math.max(0, parentBounds.y + (parentBounds.height - size.height) / 2);
+        setLocation(new Point(x, y));
     }
 
     /**
@@ -83,6 +104,17 @@ public class RemoveDatasource extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOkActionPerformed
+        int index = this.comboBoxDatasource.getSelectedIndex();
+        int indice = 0;
+        for (Adapter adapter : this.mediateur.getAdapters()) {
+            for (Datasource datasource : adapter.getDatasources()) {
+                if (indice == index) {
+                    adapter.removeDatasource(datasource);
+                    break;
+                }
+                indice++;
+            }
+        }
         dispose();
     }//GEN-LAST:event_buttonOkActionPerformed
 

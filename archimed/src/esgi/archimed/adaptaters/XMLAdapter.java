@@ -41,6 +41,15 @@ public class XMLAdapter implements Adapter {
     }
 
     @Override
+    public List<Datasource> getDatasources () {
+        List<Datasource> datasources = new ArrayList<>();
+        for (XMLDatasource xmlDatasource : sources) {
+            datasources.add(xmlDatasource);
+        }
+        return datasources;
+    }
+
+    @Override
     public boolean addDatasource(Datasource datasource) {
         if (datasource instanceof XMLDatasource) {
             this.sources.add((XMLDatasource)datasource);
@@ -48,6 +57,28 @@ public class XMLAdapter implements Adapter {
             return true;
         }
         return false;
+    }
+    
+    @Override
+    public void removeDatasource (int index) {
+        Datasource datasource = this.sources.remove(index);
+        this.pcs.firePropertyChange("removeDatasource", datasource, null);
+    }
+    
+    @Override
+    public void removeDatasource (Datasource dataSource) {
+        if (dataSource instanceof XMLDatasource) {
+            this.sources.remove((XMLDatasource)dataSource);
+            this.pcs.firePropertyChange("removeDatasource", dataSource, null);
+        }
+    }
+    
+    @Override
+    public void removeAllDatasource () {
+        while (!this.sources.isEmpty()) {
+            Datasource datasource = this.sources.remove(0);
+            this.pcs.firePropertyChange("removeDatasource", datasource, null);
+        }
     }
 
     @Override

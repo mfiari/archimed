@@ -8,6 +8,7 @@ package esgi.archimed.adaptaters;
 
 import esgi.archimed.datasources.Datasource;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 /**
  *
@@ -19,7 +20,15 @@ public interface Adapter {
     
     public void parse (String xpath);
     
+    public List<Datasource> getDatasources ();
+    
     public boolean addDatasource (Datasource dataSource);
+    
+    public void removeDatasource (int index);
+    
+    public void removeDatasource (Datasource dataSource);
+    
+    public void removeAllDatasource ();
     
     public void addListener(PropertyChangeListener listener);
     

@@ -41,6 +41,15 @@ public class SQLAdapter implements Adapter {
     }
 
     @Override
+    public List<Datasource> getDatasources () {
+        List<Datasource> datasources = new ArrayList<>();
+        for (SQLDatasource sQLDatasource : sources) {
+            datasources.add(sQLDatasource);
+        }
+        return datasources;
+    }
+    
+    @Override
     public boolean addDatasource(Datasource datasource) {
         if (datasource instanceof SQLDatasource) {
             this.sources.add((SQLDatasource)datasource);
@@ -48,6 +57,28 @@ public class SQLAdapter implements Adapter {
             return true;
         }
         return false;
+    }
+    
+    @Override
+    public void removeDatasource (int index) {
+        Datasource datasource = this.sources.remove(index);
+        this.pcs.firePropertyChange("removeDatasource", datasource, null);
+    }
+    
+    @Override
+    public void removeDatasource (Datasource dataSource) {
+        if (dataSource instanceof SQLDatasource) {
+            this.sources.remove((SQLDatasource)dataSource);
+            this.pcs.firePropertyChange("removeDatasource", dataSource, null);
+        }
+    }
+    
+    @Override
+    public void removeAllDatasource () {
+        while (!this.sources.isEmpty()) {
+            Datasource datasource = this.sources.remove(0);
+            this.pcs.firePropertyChange("removeDatasource", datasource, null);
+        }
     }
 
     @Override
