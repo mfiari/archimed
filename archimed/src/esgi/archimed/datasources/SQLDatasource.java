@@ -12,16 +12,31 @@ package esgi.archimed.datasources;
  */
 public class SQLDatasource implements Datasource {
     
-    private String host;
-    private int port;
-    private String login;
-    private String password;
+    private final String host;
+    private final int port;
+    private final String login;
+    private final String password;
+    private final String name;
     
     public SQLDatasource (String host, int port, String login, String password) {
+        this.name = "SQL datasource";
         this.host = host;
         this.port = port;
         this.login = login;
         this.password = password;
+    }
+    
+    public SQLDatasource (String name, String host, int port, String login, String password) {
+        this.name = name;
+        this.host = host;
+        this.port = port;
+        this.login = login;
+        this.password = password;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     @Override

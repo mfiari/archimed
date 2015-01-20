@@ -14,6 +14,8 @@ public interface Datasource {
     
     public boolean isAvailable ();
     
+    public String getName();
+    
     public void execute (String request);
     
 }

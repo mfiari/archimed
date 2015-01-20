@@ -6,12 +6,21 @@
 
 package esgi.archimed.adaptaters;
 
+import esgi.archimed.datasources.Datasource;
+import java.beans.PropertyChangeListener;
+
 /**
  *
  * @author mike
  */
 public interface Adapter {
     
+    public String getName ();
+    
     public void parse (String xpath);
+    
+    public boolean addDatasource (Datasource dataSource);
+    
+    public void addListener(PropertyChangeListener listener);
     
 }

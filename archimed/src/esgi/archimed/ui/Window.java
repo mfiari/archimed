@@ -8,7 +8,7 @@ package esgi.archimed.ui;
 
 import esgi.archimed.Mediateur;
 import esgi.archimed.adaptaters.Adapter;
-import esgi.archimed.adaptaters.XMLAdapter;
+import esgi.archimed.datasources.Datasource;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
@@ -28,7 +28,9 @@ public class Window extends javax.swing.JFrame {
     private final Mediateur mediateur;
     private final Color[] colors = {Color.BLUE, Color.GREEN, Color.ORANGE, Color.RED, Color.YELLOW};
     private final JPanel adapter;
+    private final JPanel datasource;
     private final List<AdapterView> adapterViews;
+    private final List<DatasourceView> datasourceViews;
 
     /**
      * Creates new form Window
@@ -36,8 +38,11 @@ public class Window extends javax.swing.JFrame {
     public Window() {
         initComponents();
         this.adapterViews = new ArrayList<>();
+        this.datasourceViews = new ArrayList<>();
         this.adapter = new JPanel();
+        this.datasource = new JPanel();
         this.adapterPanel.setViewportView(this.adapter);
+        this.sourcePanel.setViewportView(this.datasource);
         this.mediateur = new Mediateur();
         this.mediateur.addListener(new PropertyChangeListener() {
             @Override
@@ -47,7 +52,23 @@ public class Window extends javax.swing.JFrame {
                         addAdapter((Adapter)evt.getOldValue());
                         break;
                     case "removeAdapter":
-                        removeAdapter();
+                        removeAdapter((Adapter)evt.getOldValue());
+                        break;
+                }
+            }
+        });
+    }
+    
+    private void addAdapterListener (Adapter adapter) {
+        adapter.addListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                switch (evt.getPropertyName()) {
+                    case "addDatasource":
+                        addDatasource((Adapter)evt.getOldValue(), (Datasource)evt.getNewValue());
+                        break;
+                    case "removeDatasource":
+                        removeDatasource((Datasource)evt.getOldValue());
                         break;
                 }
             }
@@ -66,20 +87,44 @@ public class Window extends javax.swing.JFrame {
             this.color = color;
         }
         
+        public Adapter getAdapter () {
+            return this.adapter;
+        }
+        
+        public JPanel getPanel () {
+            return this.panel;
+        }
+        
         public Color getColor () {
             return this.color;
         }
         
     }
     
-    private void addAdapter(Adapter adapter) {
-        String name = "adapter";
-        if (adapter instanceof XMLAdapter) {
-            name += " XML";
+    private class DatasourceView {
+        
+        private final Datasource datasource;
+        private final JPanel panel;
+        
+        public DatasourceView (Datasource datasource, JPanel panel) {
+            this.datasource = datasource;
+            this.panel = panel;
         }
+        
+        public Datasource getDatasource () {
+            return this.datasource;
+        }
+        
+        public JPanel getPanel () {
+            return this.panel;
+        }
+        
+    }
+    
+    private void addAdapter(Adapter adapter) {
         JPanel panel = new JPanel(new GridLayout(2, 1));
         JPanel panelName = new JPanel ();
-        JLabel labelName = new JLabel(name);
+        JLabel labelName = new JLabel(adapter.getName());
         panelName.add(labelName);
         int indice = 0;
         if (!this.adapterViews.isEmpty()) {
@@ -102,9 +147,54 @@ public class Window extends javax.swing.JFrame {
         this.adapter.repaint();
         this.adapter.validate();
         this.adapterViews.add(new AdapterView(adapter, panel, this.colors[indice]));
+        this.addAdapterListener(adapter);
     }
     
-    private void removeAdapter() {
+    private void removeAdapter(Adapter adapter) {
+        for (AdapterView adapterView : this.adapterViews) {
+            if (adapterView.getAdapter().equals(adapter)) {
+                this.adapter.remove(adapterView.getPanel());
+                this.adapter.repaint();
+                this.adapter.validate();
+                this.adapterViews.remove(adapterView);
+                break;
+            }
+        }
+    }
+    
+    private void addDatasource(Adapter adapter, Datasource datasource) {
+        JPanel panel = new JPanel(new GridLayout(2, 1));
+        JPanel panelName = new JPanel ();
+        JLabel labelName = new JLabel(datasource.getName());
+        panelName.add(labelName);
+        Color color = Color.BLACK;
+        for (AdapterView adapterView : this.adapterViews) {
+            if (adapterView.getAdapter().equals(adapter)) {
+                color = adapterView.getColor();
+                break;
+            }
+        }
+        panelName.setBackground(color);
+        JLabel labelEtat = new JLabel("actif");
+        labelEtat.setForeground(Color.GREEN);
+        panel.add(panelName);
+        panel.add(labelEtat);
+        this.datasource.add(panel);
+        this.datasource.repaint();
+        this.datasource.validate();
+        this.datasourceViews.add(new DatasourceView(datasource, panel));
+    }
+    
+    private void removeDatasource(Datasource datasource) {
+        for (DatasourceView qatasourceView : this.datasourceViews) {
+            if (qatasourceView.getDatasource().equals(datasource)) {
+                this.datasource.remove(qatasourceView.getPanel());
+                this.datasource.repaint();
+                this.datasource.validate();
+                this.datasourceViews.remove(qatasourceView);
+                break;
+            }
+        }
     }
 
     /**
@@ -168,16 +258,6 @@ public class Window extends javax.swing.JFrame {
 
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem1.setText("Open");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jMenuItem1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jMenuItem1KeyPressed(evt);
-            }
-        });
         jMenu1.add(jMenuItem1);
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
@@ -206,12 +286,27 @@ public class Window extends javax.swing.JFrame {
         jMenu2.add(jMenuItem4);
 
         jMenuItem5.setText("Delete adaptater");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem5);
 
         jMenuItem6.setText("Add datasource");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem6);
 
         jMenuItem7.setText("Delete datasource");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem7);
 
         jMenuBar1.add(jMenu2);
@@ -241,22 +336,26 @@ public class Window extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void jMenuItem1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMenuItem1KeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1KeyPressed
-
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        Adapter adp = new XMLAdapter();
-        this.mediateur.addAdapter(adp);
+        new CreateAdapter(this, this.mediateur).setVisible(true);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         this.processWindowEvent( new WindowEvent( this, WindowEvent.WINDOW_CLOSING) );
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        new RemoveAdapter(this, this.mediateur).setVisible(true);
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        new CreateDatasource(this, this.mediateur).setVisible(true);
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        RemoveDatasource removeDatasource = new RemoveDatasource(this, true);
+        removeDatasource.setVisible(true);
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     /**
      * @param args the command line arguments

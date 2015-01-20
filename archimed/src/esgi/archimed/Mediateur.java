@@ -26,14 +26,18 @@ public class Mediateur {
         this.pcs = new PropertyChangeSupport(this);
     }
     
+    public List<Adapter> getAdapters () {
+        return this.adapters;
+    }
+    
     public void addAdapter (Adapter adapter) {
         this.adapters.add(adapter);
         this.pcs.firePropertyChange("addAdapter", adapter, null);
     }
     
     public void removeAdapter (int index) {
-        this.adapters.remove(index);
-        this.pcs.firePropertyChange("removeAdapter", null, null);
+        Adapter adapter = this.adapters.remove(index);
+        this.pcs.firePropertyChange("removeAdapter", adapter, null);
     }
     
     public void removeAdapter (Adapter adapter) {
