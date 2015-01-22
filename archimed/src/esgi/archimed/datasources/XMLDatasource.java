@@ -36,8 +36,8 @@ public class XMLDatasource implements Datasource {
     }
 
     @Override
-    public void execute(String request) {
-        
+    public Object execute(String request) {
+        return null;
     }
     
 }

@@ -14,10 +14,21 @@ import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
 
 /**
  *
@@ -54,6 +65,9 @@ public class Window extends javax.swing.JFrame {
                         break;
                     case "removeAdapter":
                         removeAdapter((Adapter)evt.getOldValue());
+                        break;
+                    case "writeResult":
+                        writeResult((Document)evt.getOldValue());
                         break;
                 }
             }
@@ -203,6 +217,33 @@ public class Window extends javax.swing.JFrame {
             }
         }
     }
+    
+    private void writeResult (Document document) {
+        this.serealize(document);
+    }
+    
+    public void serealize (Document doc) {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer tr = null;
+        try {
+            tr = tf.newTransformer();
+        } catch (TransformerConfigurationException ex) {
+            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        DOMSource in = new DOMSource(doc);
+        StringWriter writer = new StringWriter();
+        //StreamResult out = new StreamResult(System.out);
+        StreamResult out = new StreamResult(writer);
+        try {
+            tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            tr.setOutputProperty(OutputKeys.INDENT, "yes");
+            tr.transform(in, out);
+            String output = writer.getBuffer().toString();
+            this.jTextArea1.setText(output);
+        } catch (TransformerException ex) {
+            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -279,6 +320,7 @@ public class Window extends javax.swing.JFrame {
                 .addGap(8, 8, 8))
         );
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);

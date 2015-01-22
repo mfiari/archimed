@@ -9,6 +9,8 @@ package esgi.archimed.adaptaters;
 import esgi.archimed.datasources.Datasource;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -18,7 +20,7 @@ public interface Adapter {
     
     public String getName ();
     
-    public void parse (String xpath);
+    public void parse (String xpath, Element parent, Document doc);
     
     public List<Datasource> getDatasources ();
     

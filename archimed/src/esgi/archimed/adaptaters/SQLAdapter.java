@@ -10,8 +10,15 @@ import esgi.archimed.datasources.Datasource;
 import esgi.archimed.datasources.SQLDatasource;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -82,7 +89,7 @@ public class SQLAdapter implements Adapter {
     }
 
     @Override
-    public void parse(String xpath) {
+    public void parse(String xpath, Element parent, Document doc) {
         /*
         * bdd magasin {
         *    table produits [id:int, nom:string, description:int, image:string, prix:double]
@@ -109,21 +116,23 @@ public class SQLAdapter implements Adapter {
         * /produits/produit/@id => /produits/@id = SELECT id FROM produits
         * /produits/produit[@id='1']/nom => /produits[@id='1']/nom = SELECT nom FROM produits WHERE id = 1
         * /produits/produit[@*] => /produits[@*] = SELECT * FROM produits
-        * /produits/produit[not(@*)] => /produits[not(@*)] = 
+        * /produits/produit[not(@*)] => /produits[not(@*)] =
         * /produits/produit/description[@xml:lang='FR'] => /produits/description
-        * 
-        * 
+        *
+        *
         * /table/element[condition]/[@attribut|champs]/
-        * 
+        *
         * On abandonne la partie element dans nos requête
         *
         * /table[condition]/@attribut|champs[condition]
         */
         String [] noeuds = xpath.split("/");
+        String sql = "";
+        String racine = "";
         if (noeuds.length < 2) {
             System.out.println("Mauvaise requête xpath");
         } else if (noeuds.length == 2) {
-            String racine = noeuds[1];
+            racine = noeuds[1];
             if (racine.contains("[") && racine.contains("]")) {
                 String table = racine.substring(0, racine.indexOf("["));
                 String expression = racine.substring(racine.indexOf("["), racine.indexOf("]"));
@@ -138,15 +147,15 @@ public class SQLAdapter implements Adapter {
                         }
                         break;
                 }
-                String sql = "SELECT * FROM " + table + " WHERE " + condition;
+                sql = "SELECT * FROM " + table + " WHERE " + condition;
                 System.out.println(sql);
             } else {
-                String sql = "SELECT * FROM " + racine;
+                sql = "SELECT * FROM " + racine;
                 System.out.println(sql);
             }
         } else if (noeuds.length == 3) {
             String field = noeuds[2];
-            String racine = noeuds[1];
+            racine = noeuds[1];
             if (racine.contains("[") && racine.contains("]")) {
                 String table = racine.substring(0, racine.indexOf("["));
                 String expression = racine.substring(racine.indexOf("[")+1, racine.indexOf("]"));
@@ -161,13 +170,35 @@ public class SQLAdapter implements Adapter {
                         }
                         break;
                 }
-                String sql = "SELECT "+field+" FROM " + table + " WHERE " + condition;
+                sql = "SELECT "+field+" FROM " + table + " WHERE " + condition;
                 System.out.println(sql);
             } else {
-                String sql = "SELECT "+field+" FROM " + racine;
+                sql = "SELECT "+field+" FROM " + racine;
                 System.out.println(sql);
             }
         }
+        Element produits = doc.createElement(racine);
+        for (SQLDatasource datasource : sources) {
+            try {
+                ResultSet result = (ResultSet) datasource.execute(sql);
+                if (result != null) {
+                    ResultSetMetaData rsmd = result.getMetaData();
+                    int columnCount = rsmd.getColumnCount();
+                    while (result.next()) {
+                        Element produit = doc.createElement("produit");
+                        for (int i = 1 ; i <= columnCount ; i++) {
+                            String columnName = rsmd.getColumnName(i);
+                            String columnValue = result.getString(columnName);
+                            produit.setAttribute(columnName, columnValue);
+                        }
+                        produits.appendChild(produit);
+                    }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(SQLAdapter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        parent.appendChild(produits);
     }
     
     @Override

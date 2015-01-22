@@ -16,6 +16,6 @@ public interface Datasource {
     
     public String getName();
     
-    public void execute (String request);
+    public Object execute (String request);
     
 }

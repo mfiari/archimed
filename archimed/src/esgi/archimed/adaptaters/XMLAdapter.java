@@ -12,6 +12,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -82,7 +84,7 @@ public class XMLAdapter implements Adapter {
     }
 
     @Override
-    public void parse(String xpath) {
+    public void parse(String xpath, Element element, Document document) {
         
     }
     

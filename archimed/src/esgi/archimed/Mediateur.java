@@ -11,6 +11,13 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -51,9 +58,46 @@ public class Mediateur {
     }
     
     public void runRequest (String request) {
-        for (Adapter adapter : this.adapters) {
-            adapter.parse(request);
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.newDocument();
+            Element parent = doc.createElement("results");
+            doc.appendChild(parent);
+            for (Adapter adapter : this.adapters) {
+                new RequestThread(request, adapter, parent, doc).start();
+            }
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(Mediateur.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public class RequestThread extends Thread {
+        
+        private final String request;
+        private final Adapter adapter;
+        private final Element parent;
+        private final Document document;
+        
+        public RequestThread (String request, Adapter adapter, Element parent, Document document) {
+            this.adapter = adapter;
+            this.parent = parent;
+            this.request = request;
+            this.document = document;
+        }
+        
+        @Override
+        public void run() {
+            Element element = this.document.createElement("adapter");
+            element.setAttribute("nom", this.adapter.getName());
+            this.adapter.parse(this.request, element, this.document);
+            Mediateur.this.refresh(this.document, this.parent, element);
+        }
+    }
+    
+    public synchronized void refresh (Document document, Element parent, Element fils) {
+        parent.appendChild(fils);
+        Mediateur.this.pcs.firePropertyChange("writeResult", document, null);
     }
     
     

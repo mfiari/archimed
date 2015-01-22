@@ -107,24 +107,24 @@ public class CreateDatasource extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(63, 63, 63)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(buttonCreate)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
-                                        .addComponent(buttonCancel))
-                                    .addComponent(comboBoxDatasource, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(67, 67, 67)
-                                .addComponent(textFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 73, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(scrollPaneDatasource)
-                            .addComponent(scrollPaneAdapter))))
+                            .addComponent(scrollPaneAdapter)
+                            .addComponent(scrollPaneDatasource)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(97, 97, 97)
+                                .addComponent(textFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(96, 96, 96)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(buttonCreate)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(buttonCancel))
+                                    .addComponent(comboBoxDatasource, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 93, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -138,7 +138,7 @@ public class CreateDatasource extends javax.swing.JDialog {
                 .addComponent(scrollPaneAdapter, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(comboBoxDatasource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonCreate)
                     .addComponent(buttonCancel))
@@ -154,17 +154,23 @@ public class CreateDatasource extends javax.swing.JDialog {
         Datasource datasource;
         switch (item) {
             case "XML datasource" :
+                String url = ((JTextField)this.panelDatasource.getComponent(0)).getText();
                 if (name.isEmpty()) {
-                    datasource = new XMLDatasource("");
+                    datasource = new XMLDatasource(url);
                 } else {
-                    datasource = new XMLDatasource(name, "");
+                    datasource = new XMLDatasource(name, url);
                 }
                 break;
             case "SQL datasource" :
+                String host = ((JTextField)this.panelDatasource.getComponent(0)).getText();
+                int port = Integer.parseInt(((JTextField)this.panelDatasource.getComponent(1)).getText());
+                String login = ((JTextField)this.panelDatasource.getComponent(2)).getText();
+                String password = ((JTextField)this.panelDatasource.getComponent(3)).getText();
+                String database = ((JTextField)this.panelDatasource.getComponent(4)).getText();
                 if (name.isEmpty()) {
-                    datasource = new SQLDatasource("", 0, "", "");
+                    datasource = new SQLDatasource(host, port, login, password, database);
                 } else {
-                    datasource = new SQLDatasource(name, "", 0, "", "");
+                    datasource = new SQLDatasource(name, host, port, login, password, database);
                 }
                 break;
             default : 
@@ -207,7 +213,7 @@ public class CreateDatasource extends javax.swing.JDialog {
                 this.panelDatasource.add(urlTextField);
                 break;
             case "SQL datasource" :
-                int width = (this.panelDatasource.getWidth() / 4)-10;
+                int width = (this.panelDatasource.getWidth() / 5)-10;
                 int heigth = 30;
                 JTextField hostTextField = new JTextField("host");
                 hostTextField.setToolTipText("host");
@@ -221,10 +227,14 @@ public class CreateDatasource extends javax.swing.JDialog {
                 JTextField passwordTextField = new JTextField("password");
                 passwordTextField.setToolTipText("password");
                 passwordTextField.setPreferredSize(new Dimension(width, heigth));
+                JTextField databaseTextField = new JTextField("database");
+                databaseTextField.setToolTipText("database");
+                databaseTextField.setPreferredSize(new Dimension(width, heigth));
                 this.panelDatasource.add(hostTextField);
                 this.panelDatasource.add(portTextField);
                 this.panelDatasource.add(loginTextField);
                 this.panelDatasource.add(passwordTextField);
+                this.panelDatasource.add(databaseTextField);
                 break;
             default : 
                 break;
