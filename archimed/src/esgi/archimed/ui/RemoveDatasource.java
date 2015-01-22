@@ -12,6 +12,8 @@ import esgi.archimed.datasources.Datasource;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -30,9 +32,13 @@ public class RemoveDatasource extends javax.swing.JDialog {
         super(parent, true);
         initComponents();
         this.mediateur = mediateur;
+        List<Datasource> datasources = new ArrayList<>();
         for (Adapter adapter : this.mediateur.getAdapters()) {
             for (Datasource datasource : adapter.getDatasources()) {
-                this.comboBoxDatasource.addItem(datasource.getName());
+                if (!datasources.contains(datasource)) {
+                    this.comboBoxDatasource.addItem(datasource.getName());
+                    datasources.add(datasource);
+                }
             }
         }
         Rectangle parentBounds = parent.getBounds();

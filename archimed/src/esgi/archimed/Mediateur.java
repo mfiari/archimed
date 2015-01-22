@@ -50,5 +50,11 @@ public class Mediateur {
         this.pcs.addPropertyChangeListener(listener);
     }
     
+    public void runRequest (String request) {
+        for (Adapter adapter : this.adapters) {
+            adapter.parse(request);
+        }
+    }
+    
     
 }

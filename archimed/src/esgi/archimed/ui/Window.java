@@ -69,7 +69,7 @@ public class Window extends javax.swing.JFrame {
                         addDatasource((Adapter)evt.getOldValue(), (Datasource)evt.getNewValue());
                         break;
                     case "removeDatasource":
-                        removeDatasource((Datasource)evt.getOldValue());
+                        removeDatasource((Adapter)evt.getOldValue(), (Datasource)evt.getNewValue());
                         break;
                 }
             }
@@ -104,12 +104,18 @@ public class Window extends javax.swing.JFrame {
     
     private class DatasourceView {
         
+        private final Adapter adapter;
         private final Datasource datasource;
         private final JPanel panel;
         
-        public DatasourceView (Datasource datasource, JPanel panel) {
+        public DatasourceView (Adapter adapter, Datasource datasource, JPanel panel) {
+            this.adapter = adapter;
             this.datasource = datasource;
             this.panel = panel;
+        }
+        
+        public Adapter getAdapter () {
+            return this.adapter;
         }
         
         public Datasource getDatasource () {
@@ -177,22 +183,22 @@ public class Window extends javax.swing.JFrame {
         }
         panelName.setBackground(color);
         JLabel labelEtat = new JLabel("actif");
-        labelEtat.setForeground(Color.GREEN);
+        labelEtat.setForeground(Color.green);
         panel.add(panelName);
         panel.add(labelEtat);
         this.datasource.add(panel);
         this.datasource.repaint();
         this.datasource.validate();
-        this.datasourceViews.add(new DatasourceView(datasource, panel));
+        this.datasourceViews.add(new DatasourceView(adapter, datasource, panel));
     }
     
-    private void removeDatasource(Datasource datasource) {
-        for (DatasourceView qatasourceView : this.datasourceViews) {
-            if (qatasourceView.getDatasource().equals(datasource)) {
-                this.datasource.remove(qatasourceView.getPanel());
+    private void removeDatasource(Adapter adapter, Datasource datasource) {
+        for (DatasourceView datasourceView : this.datasourceViews) {
+            if (datasourceView.getAdapter().equals(adapter) && datasourceView.getDatasource().equals(datasource)) {
+                this.datasource.remove(datasourceView.getPanel());
                 this.datasource.repaint();
                 this.datasource.validate();
-                this.datasourceViews.remove(qatasourceView);
+                this.datasourceViews.remove(datasourceView);
                 break;
             }
         }
@@ -210,105 +216,127 @@ public class Window extends javax.swing.JFrame {
         sourcePanel = new javax.swing.JScrollPane();
         adapterPanel = new javax.swing.JScrollPane();
         mediateurPanel = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        textFieldRequest = new javax.swing.JTextField();
+        buttonOk = new javax.swing.JButton();
+        labelMediateur = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        menuFile = new javax.swing.JMenu();
+        menuItemOpen = new javax.swing.JMenuItem();
+        menuItemSave = new javax.swing.JMenuItem();
+        menuItemExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
+        menuItemAddAdapter = new javax.swing.JMenuItem();
+        menuItemDeleteAdapter = new javax.swing.JMenuItem();
+        menuItemAddDatasource = new javax.swing.JMenuItem();
+        menuItemDeleteDatasource = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Archimed");
 
         adapterPanel.setOpaque(false);
 
-        jTextField1.setText("Request");
+        textFieldRequest.setText("Request");
 
-        jButton1.setText("OK");
+        buttonOk.setText("OK");
+        buttonOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonOkActionPerformed(evt);
+            }
+        });
+
+        labelMediateur.setText("Médiateur xpath");
 
         javax.swing.GroupLayout mediateurPanelLayout = new javax.swing.GroupLayout(mediateurPanel);
         mediateurPanel.setLayout(mediateurPanelLayout);
         mediateurPanelLayout.setHorizontalGroup(
             mediateurPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mediateurPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTextField1)
+                .addGroup(mediateurPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mediateurPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(textFieldRequest))
+                    .addGroup(mediateurPanelLayout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(buttonOk)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(mediateurPanelLayout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addComponent(jButton1)
-                .addContainerGap(556, Short.MAX_VALUE))
+                .addGap(322, 322, 322)
+                .addComponent(labelMediateur)
+                .addContainerGap(332, Short.MAX_VALUE))
         );
         mediateurPanelLayout.setVerticalGroup(
             mediateurPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mediateurPanelLayout.createSequentialGroup()
-                .addContainerGap(47, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addComponent(labelMediateur)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(textFieldRequest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(buttonOk)
                 .addGap(8, 8, 8))
         );
 
-        jMenu1.setText("File");
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem1.setText("Open");
-        jMenu1.add(jMenuItem1);
+        menuFile.setText("File");
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem2.setText("Save");
-        jMenu1.add(jMenuItem2);
+        menuItemOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        menuItemOpen.setText("Open");
+        menuFile.add(menuItemOpen);
 
-        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
-        jMenuItem3.setText("Exit");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        menuItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        menuItemSave.setText("Save");
+        menuFile.add(menuItemSave);
+
+        menuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
+        menuItemExit.setText("Exit");
+        menuItemExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                menuItemExitActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem3);
+        menuFile.add(menuItemExit);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(menuFile);
 
         jMenu2.setText("Edit");
 
-        jMenuItem4.setText("Add adaptater");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        menuItemAddAdapter.setText("Add adaptater");
+        menuItemAddAdapter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                menuItemAddAdapterActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem4);
+        jMenu2.add(menuItemAddAdapter);
 
-        jMenuItem5.setText("Delete adaptater");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+        menuItemDeleteAdapter.setText("Delete adaptater");
+        menuItemDeleteAdapter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
+                menuItemDeleteAdapterActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem5);
+        jMenu2.add(menuItemDeleteAdapter);
 
-        jMenuItem6.setText("Add datasource");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+        menuItemAddDatasource.setText("Add datasource");
+        menuItemAddDatasource.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
+                menuItemAddDatasourceActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem6);
+        jMenu2.add(menuItemAddDatasource);
 
-        jMenuItem7.setText("Delete datasource");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+        menuItemDeleteDatasource.setText("Delete datasource");
+        menuItemDeleteDatasource.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
+                menuItemDeleteDatasourceActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem7);
+        jMenu2.add(menuItemDeleteDatasource);
 
         jMenuBar1.add(jMenu2);
 
@@ -321,6 +349,10 @@ public class Window extends javax.swing.JFrame {
             .addComponent(sourcePanel)
             .addComponent(adapterPanel)
             .addComponent(mediateurPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -331,31 +363,38 @@ public class Window extends javax.swing.JFrame {
                 .addComponent(adapterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(mediateurPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+    private void menuItemAddAdapterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemAddAdapterActionPerformed
         new CreateAdapter(this, this.mediateur).setVisible(true);
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
+    }//GEN-LAST:event_menuItemAddAdapterActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void menuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExitActionPerformed
         this.processWindowEvent( new WindowEvent( this, WindowEvent.WINDOW_CLOSING) );
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    }//GEN-LAST:event_menuItemExitActionPerformed
 
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+    private void menuItemDeleteAdapterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDeleteAdapterActionPerformed
         new RemoveAdapter(this, this.mediateur).setVisible(true);
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    }//GEN-LAST:event_menuItemDeleteAdapterActionPerformed
 
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+    private void menuItemAddDatasourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemAddDatasourceActionPerformed
         new CreateDatasource(this, this.mediateur).setVisible(true);
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
+    }//GEN-LAST:event_menuItemAddDatasourceActionPerformed
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+    private void menuItemDeleteDatasourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDeleteDatasourceActionPerformed
         new RemoveDatasource(this, this.mediateur).setVisible(true);
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
+    }//GEN-LAST:event_menuItemDeleteDatasourceActionPerformed
+
+    private void buttonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOkActionPerformed
+        String request = this.textFieldRequest.getText();
+        this.mediateur.runRequest(request);
+    }//GEN-LAST:event_buttonOkActionPerformed
 
     /**
      * @param args the command line arguments
@@ -389,19 +428,22 @@ public class Window extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane adapterPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JMenu jMenu1;
+    private javax.swing.JButton buttonOk;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel labelMediateur;
     private javax.swing.JPanel mediateurPanel;
+    private javax.swing.JMenu menuFile;
+    private javax.swing.JMenuItem menuItemAddAdapter;
+    private javax.swing.JMenuItem menuItemAddDatasource;
+    private javax.swing.JMenuItem menuItemDeleteAdapter;
+    private javax.swing.JMenuItem menuItemDeleteDatasource;
+    private javax.swing.JMenuItem menuItemExit;
+    private javax.swing.JMenuItem menuItemOpen;
+    private javax.swing.JMenuItem menuItemSave;
     private javax.swing.JScrollPane sourcePanel;
+    private javax.swing.JTextField textFieldRequest;
     // End of variables declaration//GEN-END:variables
 }

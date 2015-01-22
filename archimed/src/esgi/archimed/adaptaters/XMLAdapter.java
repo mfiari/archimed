@@ -62,14 +62,14 @@ public class XMLAdapter implements Adapter {
     @Override
     public void removeDatasource (int index) {
         Datasource datasource = this.sources.remove(index);
-        this.pcs.firePropertyChange("removeDatasource", datasource, null);
+        this.pcs.firePropertyChange("removeDatasource", this, datasource);
     }
     
     @Override
     public void removeDatasource (Datasource dataSource) {
         if (dataSource instanceof XMLDatasource) {
             this.sources.remove((XMLDatasource)dataSource);
-            this.pcs.firePropertyChange("removeDatasource", dataSource, null);
+            this.pcs.firePropertyChange("removeDatasource", this, dataSource);
         }
     }
     
@@ -77,7 +77,7 @@ public class XMLAdapter implements Adapter {
     public void removeAllDatasource () {
         while (!this.sources.isEmpty()) {
             Datasource datasource = this.sources.remove(0);
-            this.pcs.firePropertyChange("removeDatasource", datasource, null);
+            this.pcs.firePropertyChange("removeDatasource", this, datasource);
         }
     }
 
