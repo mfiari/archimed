@@ -129,9 +129,23 @@ public class SQLAdapter implements Adapter {
         String [] noeuds = xpath.split("/");
         String sql = "";
         String racine = "";
+        String element = "ligne";
+        String field = null;
         if (noeuds.length < 2) {
             System.out.println("Mauvaise requête xpath");
         } else if (noeuds.length == 2) {
+            racine = noeuds[1];
+            sql = "SELECT * FROM " + racine;
+        } else if (noeuds.length == 3) {
+            racine = noeuds[1];
+            element = noeuds[2];
+            sql = "SELECT * FROM " + racine;
+        } else if (noeuds.length == 4) {
+            racine = noeuds[1];
+            element = noeuds[2];
+            field = noeuds[3];
+            sql = "SELECT "+field+" FROM " + racine;
+        }/* else if (noeuds.length == 2) {
             racine = noeuds[1];
             if (racine.contains("[") && racine.contains("]")) {
                 String table = racine.substring(0, racine.indexOf("["));
@@ -176,7 +190,7 @@ public class SQLAdapter implements Adapter {
                 sql = "SELECT "+field+" FROM " + racine;
                 System.out.println(sql);
             }
-        }
+        }*/
         Element produits = doc.createElement(racine);
         for (SQLDatasource datasource : sources) {
             try {
@@ -185,13 +199,19 @@ public class SQLAdapter implements Adapter {
                     ResultSetMetaData rsmd = result.getMetaData();
                     int columnCount = rsmd.getColumnCount();
                     while (result.next()) {
-                        Element produit = doc.createElement("produit");
-                        for (int i = 1 ; i <= columnCount ; i++) {
-                            String columnName = rsmd.getColumnName(i);
-                            String columnValue = result.getString(columnName);
-                            produit.setAttribute(columnName, columnValue);
+                        Element elmt;
+                        if (field == null) {
+                            elmt = doc.createElement(element);
+                            for (int i = 1 ; i <= columnCount ; i++) {
+                                String columnName = rsmd.getColumnName(i);
+                                String columnValue = result.getString(columnName);
+                                elmt.setAttribute(columnName, columnValue);
+                            }
+                        } else {
+                            elmt = doc.createElement(field);
+                            elmt.appendChild(doc.createTextNode(result.getString(field)));
                         }
-                        produits.appendChild(produit);
+                        produits.appendChild(elmt);
                     }
                 }
             } catch (SQLException ex) {
