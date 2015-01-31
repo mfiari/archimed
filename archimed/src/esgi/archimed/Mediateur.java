@@ -65,7 +65,9 @@ public class Mediateur {
             Element parent = doc.createElement("results");
             doc.appendChild(parent);
             for (Adapter adapter : this.adapters) {
-                new RequestThread(request, adapter, parent, doc).start();
+                if (adapter.handleRequest(request)) {
+                    new RequestThread(request, adapter, parent, doc).start();
+                }
             }
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(Mediateur.class.getName()).log(Level.SEVERE, null, ex);

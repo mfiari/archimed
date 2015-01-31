@@ -20,8 +20,6 @@ public interface Adapter {
     
     public String getName ();
     
-    public void parse (String xpath, Element parent, Document doc);
-    
     public List<Datasource> getDatasources ();
     
     public boolean addDatasource (Datasource dataSource);
@@ -31,6 +29,10 @@ public interface Adapter {
     public void removeDatasource (Datasource dataSource);
     
     public void removeAllDatasource ();
+    
+    public boolean handleRequest (String xpath);
+    
+    public void parse (String xpath, Element parent, Document doc);
     
     public void addListener(PropertyChangeListener listener);
     

@@ -9,6 +9,7 @@ package esgi.archimed.ui;
 import esgi.archimed.Mediateur;
 import esgi.archimed.adaptaters.Adapter;
 import esgi.archimed.datasources.Datasource;
+import esgi.archimed.panne.Panne;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
@@ -90,6 +91,22 @@ public class Window extends javax.swing.JFrame {
         });
     }
     
+    private void addDatasourceListener (Datasource datasource) {
+        datasource.addListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                switch (evt.getPropertyName()) {
+                    case "available":
+                        datasourceAvailable((Datasource)evt.getOldValue(), (boolean)evt.getNewValue());
+                        break;
+                    case "processing":
+                        datasourceProcessing((Datasource)evt.getOldValue(), (boolean)evt.getNewValue());
+                        break;
+                }
+            }
+        });
+    }
+    
     private class AdapterView {
         
         private final Adapter adapter;
@@ -121,11 +138,13 @@ public class Window extends javax.swing.JFrame {
         private final Adapter adapter;
         private final Datasource datasource;
         private final JPanel panel;
+        private final JLabel etat;
         
-        public DatasourceView (Adapter adapter, Datasource datasource, JPanel panel) {
+        public DatasourceView (Adapter adapter, Datasource datasource, JPanel panel, JLabel etat) {
             this.adapter = adapter;
             this.datasource = datasource;
             this.panel = panel;
+            this.etat = etat;
         }
         
         public Adapter getAdapter () {
@@ -138,6 +157,10 @@ public class Window extends javax.swing.JFrame {
         
         public JPanel getPanel () {
             return this.panel;
+        }
+        
+        public JLabel getEtat () {
+            return this.etat;
         }
         
     }
@@ -160,10 +183,7 @@ public class Window extends javax.swing.JFrame {
             }
         }
         panelName.setBackground(this.colors[indice]);
-        JLabel labelEtat = new JLabel("actif");
-        labelEtat.setForeground(Color.GREEN);
         panel.add(panelName);
-        panel.add(labelEtat);
         this.adapter.add(panel);
         this.adapter.repaint();
         this.adapter.validate();
@@ -203,7 +223,9 @@ public class Window extends javax.swing.JFrame {
         this.datasource.add(panel);
         this.datasource.repaint();
         this.datasource.validate();
-        this.datasourceViews.add(new DatasourceView(adapter, datasource, panel));
+        this.datasourceViews.add(new DatasourceView(adapter, datasource, panel, labelEtat));
+        this.addDatasourceListener(datasource);
+        new Panne(datasource, 10, 10).start();
     }
     
     private void removeDatasource(Adapter adapter, Datasource datasource) {
@@ -213,6 +235,36 @@ public class Window extends javax.swing.JFrame {
                 this.datasource.repaint();
                 this.datasource.validate();
                 this.datasourceViews.remove(datasourceView);
+                break;
+            }
+        }
+    }
+    
+    private void datasourceAvailable (Datasource datasource, boolean avalaible) {
+        for (DatasourceView datasourceView : this.datasourceViews) {
+            if (datasourceView.getDatasource().equals(datasource)) {
+                if (avalaible) {
+                    datasourceView.getEtat().setText("actif");
+                    datasourceView.getEtat().setForeground(Color.green);
+                } else {
+                    datasourceView.getEtat().setText("inactif");
+                    datasourceView.getEtat().setForeground(Color.RED);
+                }
+                break;
+            }
+        }
+    }
+    
+    private void datasourceProcessing (Datasource datasource, boolean processing) {
+        for (DatasourceView datasourceView : this.datasourceViews) {
+            if (datasourceView.getDatasource().equals(datasource)) {
+                if (processing) {
+                    datasourceView.getEtat().setText("processing...");
+                    datasourceView.getEtat().setForeground(Color.ORANGE);
+                } else {
+                    datasourceView.getEtat().setText("actif");
+                    datasourceView.getEtat().setForeground(Color.green);
+                }
                 break;
             }
         }

@@ -82,6 +82,22 @@ public class XMLAdapter implements Adapter {
             this.pcs.firePropertyChange("removeDatasource", this, datasource);
         }
     }
+    
+    @Override
+    public boolean handleRequest (String xpath) {
+        String [] noeuds = xpath.split("/");
+        if (noeuds.length < 2) {
+            return false;
+        } else {
+            String racine = noeuds[1];
+            for (XMLDatasource datasource : this.sources) {
+                if (datasource.isAvailable() && datasource.handle(racine)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     @Override
     public void parse(String xpath, Element element, Document document) {
