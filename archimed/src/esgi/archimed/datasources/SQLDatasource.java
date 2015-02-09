@@ -58,6 +58,22 @@ public class SQLDatasource implements Datasource {
     public String getName() {
         return this.name;
     }
+    
+    public String getHost () {
+        return this.host;
+    }
+    
+    public int getPort () {
+        return this.port;
+    }
+    
+    public String getLogin () {
+        return this.login;
+    }
+    
+    public String getPassword () {
+        return this.password;
+    }
 
     @Override
     public boolean isAvailable() {

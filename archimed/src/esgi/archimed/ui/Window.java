@@ -10,6 +10,7 @@ import esgi.archimed.Mediateur;
 import esgi.archimed.adaptaters.Adapter;
 import esgi.archimed.datasources.Datasource;
 import esgi.archimed.panne.Panne;
+import esgi.archimed.utils.MediateurSave;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
@@ -381,10 +382,20 @@ public class Window extends javax.swing.JFrame {
 
         menuItemOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         menuItemOpen.setText("Open");
+        menuItemOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemOpenActionPerformed(evt);
+            }
+        });
         menuFile.add(menuItemOpen);
 
         menuItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         menuItemSave.setText("Save");
+        menuItemSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemSaveActionPerformed(evt);
+            }
+        });
         menuFile.add(menuItemSave);
 
         menuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
@@ -489,6 +500,15 @@ public class Window extends javax.swing.JFrame {
         String request = this.textFieldRequest.getText();
         this.mediateur.runRequest(request);
     }//GEN-LAST:event_buttonOkActionPerformed
+
+    private void menuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemOpenActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuItemOpenActionPerformed
+
+    private void menuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSaveActionPerformed
+        MediateurSave mediateurSave = new MediateurSave();
+        mediateurSave.Save(this.mediateur);
+    }//GEN-LAST:event_menuItemSaveActionPerformed
 
     /**
      * @param args the command line arguments

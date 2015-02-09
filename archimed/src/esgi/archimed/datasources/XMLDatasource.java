@@ -8,6 +8,19 @@ package esgi.archimed.datasources;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -38,6 +51,10 @@ public class XMLDatasource implements Datasource {
     public String getName() {
         return this.name;
     }
+    
+    public String getUrl () {
+        return this.url;
+    }
 
     @Override
     public boolean isAvailable() {
@@ -52,11 +69,20 @@ public class XMLDatasource implements Datasource {
     
     @Override
     public boolean handle (String request) {
-        return false;
+        return true;
     }
 
     @Override
     public Object execute(String request) {
+        try {
+            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = builderFactory.newDocumentBuilder();
+            Document document = builder.parse(new FileInputStream(this.url));
+            XPath xPath =  XPathFactory.newInstance().newXPath();
+            return xPath.compile(request).evaluate(document, XPathConstants.NODESET);
+        } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
+            Logger.getLogger(XMLDatasource.class.getName()).log(Level.SEVERE, null, e);
+        }
         return null;
     }
     

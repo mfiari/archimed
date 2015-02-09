@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -100,8 +102,18 @@ public class XMLAdapter implements Adapter {
     }
 
     @Override
-    public void parse(String xpath, Element element, Document document) {
-        
+    public void parse(String xpath, Element parent, Document doc) {
+        for (XMLDatasource datasource : sources) {
+            if (datasource.isAvailable() && datasource.handle(xpath)) {
+                NodeList nodeList = (NodeList)datasource.execute(xpath);
+                if (nodeList != null) {
+                    for (int i = 0; i < nodeList.getLength(); i++) {
+                        Node node = doc.importNode(nodeList.item(i), true);
+                        parent.appendChild(node);
+                    }
+                }
+            }
+        }
     }
     
     @Override
