@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- Scénario simple : deux adaptateur possèdant chacun une source -->
+<mediation>
+	<mediateur>
+		<adresse>localhost</adresse>
+		<langageMediation>xpath</langageMediation>
+		<adaptateur>
+			<typeDonnee>xml</typeDonnee>
+			<adresse>localhost</adresse>
+			<source>
+				<typeDonnee>xml</typeDonnee>
+				<url>C:\Users\mike\prive\cours\ESGI\5AL\xml\cinema.xml</url>
+			</source>
+		</adaptateur>
+		<adaptateur>
+			<typeDonnee>sql</typeDonnee>
+			<adresse>localhost</adresse>
+			<source>
+				<typeDonnee>sql</typeDonnee>
+				<host>localhost</host>
+				<port>3306</port>
+				<login>root</login>
+				<password/>
+				<database>archimed</database>
+			</source>
+		</adaptateur>
+	</mediateur>
+</mediation>

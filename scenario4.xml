@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Scénario simple avec panne : deux adaptateur possèdant chacun une source, panne d'une durée de 30s sur chaque source toute les minutes -->
+<mediation>
+	<mediateur>
+		<adresse>localhost</adresse>
+		<langageMediation>xpath</langageMediation>
+		<adaptateur>
+			<typeDonnee>xml</typeDonnee>
+			<adresse>localhost</adresse>
+			<source>
+				<typeDonnee>xml</typeDonnee>
+				<url>C:\Users\mike\prive\cours\ESGI\5AL\xml\cinema.xml</url>
+				<panne>
+					<temps>60</temps>
+					<duree>30</duree>
+				</panne>
+			</source>
+		</adaptateur>
+		<adaptateur>
+			<typeDonnee>sql</typeDonnee>
+			<adresse>localhost</adresse>
+			<source>
+				<typeDonnee>sql</typeDonnee>
+				<host>localhost</host>
+				<port>3306</port>
+				<login>root</login>
+				<password/>
+				<database>archimed</database>
+				<panne>
+					<temps>60</temps>
+					<duree>30</duree>
+				</panne>
+			</source>
+		</adaptateur>
+	</mediateur>
+</mediation>

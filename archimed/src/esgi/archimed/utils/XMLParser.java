@@ -12,6 +12,7 @@ import esgi.archimed.adaptaters.XMLAdapter;
 import esgi.archimed.datasources.Datasource;
 import esgi.archimed.datasources.SQLDatasource;
 import esgi.archimed.datasources.XMLDatasource;
+import esgi.archimed.panne.Panne;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -102,6 +103,12 @@ public class XMLParser {
             this.datas.put("password", reader.getElementText());
         } else if ("database".equals(localName)) {
             this.datas.put("database", reader.getElementText());
+        } else if ("panne".equals(localName)) {
+            this.datas.put("panne", null);
+        } else if ("temps".equals(localName)) {
+            this.datas.put("temps", reader.getElementText());
+        } else if ("duree".equals(localName)) {
+            this.datas.put("duree", reader.getElementText());
         }
     }
 
@@ -113,6 +120,9 @@ public class XMLParser {
                 this.datasource = new SQLDatasource(this.datas.get("host"), Integer.parseInt(this.datas.get("port")), this.datas.get("login"), this.datas.get("password"), this.datas.get("database"));
             }
             this.adapter.addDatasource(this.datasource);
+            if (this.datas.containsKey("panne")) {
+                new Panne(this.datasource, Integer.parseInt(this.datas.get("temps")), Integer.parseInt(this.datas.get("duree"))).start();
+            }
         } else if ("adaptateur".equals(reader.getLocalName())) {
             this.mediateur.addAdapter(this.adapter);
         }

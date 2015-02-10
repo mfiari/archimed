@@ -52,9 +52,9 @@ public class MediateurSave {
                 }
                 adaptateurElem.appendChild(adaptateurTypeDonnee);
                 adaptateurElem.appendChild(adaptateurAdresse);
-                Element datasourceTypeDonnee = doc.createElement("typeDonnee");
-                Element datasourceElem = doc.createElement("source");
                 for (Datasource datasource : adapter.getDatasources()) {
+                    Element datasourceElem = doc.createElement("source");
+                    Element datasourceTypeDonnee = doc.createElement("typeDonnee");
                     if (datasource instanceof XMLDatasource) {
                         XMLDatasource xmlDatasource = (XMLDatasource) datasource;
                         datasourceTypeDonnee.appendChild(doc.createTextNode("xml"));
