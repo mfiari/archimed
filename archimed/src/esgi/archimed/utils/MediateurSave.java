@@ -35,6 +35,7 @@ public class MediateurSave {
             Element mediation = doc.createElement("mediation");
             Element mediateurElem = doc.createElement("mediateur");
             Element mediateurAdresse = doc.createElement("adresse");
+            mediateurAdresse.appendChild(doc.createTextNode(mediateur.getAdresse()));
             Element mediateurLangage = doc.createElement("langageMediation");
             mediateurLangage.appendChild(doc.createTextNode("xpath"));
             mediateurElem.appendChild(mediateurAdresse);
@@ -43,6 +44,7 @@ public class MediateurSave {
                 Element adaptateurElem = doc.createElement("adaptateur");
                 Element adaptateurTypeDonnee = doc.createElement("typeDonnee");
                 Element adaptateurAdresse = doc.createElement("adresse");
+                adaptateurAdresse.appendChild(doc.createTextNode(adapter.getAdresse()));
                 if (adapter instanceof XMLAdapter) {
                     adaptateurTypeDonnee.appendChild(doc.createTextNode("xml"));
                 } else if (adapter instanceof SQLAdapter) {
@@ -71,11 +73,14 @@ public class MediateurSave {
                         datasourceLogin.appendChild(doc.createTextNode(sqlDatasource.getLogin()));
                         Element datasourcePassword = doc.createElement("password");
                         datasourcePassword.appendChild(doc.createTextNode(sqlDatasource.getPassword()));
+                        Element datasourceDatabase = doc.createElement("database");
+                        datasourceDatabase.appendChild(doc.createTextNode(sqlDatasource.getDatabase()));
                         datasourceElem.appendChild(datasourceTypeDonnee);
                         datasourceElem.appendChild(datasourceHost);
                         datasourceElem.appendChild(datasourcePort);
                         datasourceElem.appendChild(datasourceLogin);
                         datasourceElem.appendChild(datasourcePassword);
+                        datasourceElem.appendChild(datasourceDatabase);
                     }
                     adaptateurElem.appendChild(datasourceElem);
                 }

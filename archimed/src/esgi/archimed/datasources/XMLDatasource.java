@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  */
 public class XMLDatasource implements Datasource {
     
-    private final String url;
+    private String url;
     private final String name;
     private boolean available;
     private final PropertyChangeSupport pcs;
@@ -50,6 +50,10 @@ public class XMLDatasource implements Datasource {
     @Override
     public String getName() {
         return this.name;
+    }
+    
+    public void setUrl (String url) {
+        this.url = url;
     }
     
     public String getUrl () {

@@ -46,6 +46,11 @@ public class SQLAdapter implements Adapter {
     public String getName() {
         return this.name;
     }
+    
+    @Override
+    public String getAdresse () {
+        return "localhost";
+    }
 
     @Override
     public List<Datasource> getDatasources () {

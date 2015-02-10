@@ -20,6 +20,8 @@ public interface Adapter {
     
     public String getName ();
     
+    public String getAdresse ();
+    
     public List<Datasource> getDatasources ();
     
     public boolean addDatasource (Datasource dataSource);

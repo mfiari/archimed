@@ -33,6 +33,10 @@ public class Mediateur {
         this.pcs = new PropertyChangeSupport(this);
     }
     
+    public String getAdresse () {
+        return "localhost";
+    }
+    
     public List<Adapter> getAdapters () {
         return this.adapters;
     }

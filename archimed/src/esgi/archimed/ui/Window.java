@@ -10,17 +10,20 @@ import esgi.archimed.Mediateur;
 import esgi.archimed.adaptaters.Adapter;
 import esgi.archimed.datasources.Datasource;
 import esgi.archimed.panne.Panne;
+import esgi.archimed.utils.MediateurLoad;
 import esgi.archimed.utils.MediateurSave;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.xml.transform.OutputKeys;
@@ -276,23 +279,19 @@ public class Window extends javax.swing.JFrame {
     }
     
     public void serealize (Document doc) {
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer tr = null;
         try {
-            tr = tf.newTransformer();
-        } catch (TransformerConfigurationException ex) {
-            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        DOMSource in = new DOMSource(doc);
-        StringWriter writer = new StringWriter();
-        //StreamResult out = new StreamResult(System.out);
-        StreamResult out = new StreamResult(writer);
-        try {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer tr = tf.newTransformer();
+            DOMSource in = new DOMSource(doc);
+            StringWriter writer = new StringWriter();
+            StreamResult out = new StreamResult(writer);
             tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
             tr.setOutputProperty(OutputKeys.INDENT, "yes");
             tr.transform(in, out);
             String output = writer.getBuffer().toString();
             this.jTextArea1.setText(output);
+        } catch (TransformerConfigurationException ex) {
+            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TransformerException ex) {
             Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -502,7 +501,21 @@ public class Window extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonOkActionPerformed
 
     private void menuItemOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemOpenActionPerformed
-        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Ouvrir");
+        fileChooser.setApproveButtonText("Ouvrir");
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            MediateurLoad mediateurLoad = new MediateurLoad();
+            Mediateur mdt = mediateurLoad.load(file);
+            for (Adapter adp : mdt.getAdapters()) {
+                this.mediateur.addAdapter(adp);
+                for (Datasource dts : adp.getDatasources()) {
+                    this.addDatasource(adp, dts);
+                }
+            }
+        }
     }//GEN-LAST:event_menuItemOpenActionPerformed
 
     private void menuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSaveActionPerformed

@@ -74,6 +74,10 @@ public class SQLDatasource implements Datasource {
     public String getPassword () {
         return this.password;
     }
+    
+    public String getDatabase () {
+        return this.database;
+    }
 
     @Override
     public boolean isAvailable() {
