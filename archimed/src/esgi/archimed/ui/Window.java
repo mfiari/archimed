@@ -519,8 +519,7 @@ public class Window extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemOpenActionPerformed
 
     private void menuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSaveActionPerformed
-        MediateurSave mediateurSave = new MediateurSave();
-        mediateurSave.Save(this.mediateur);
+        new SaveMediateur(this, this.mediateur).setVisible(true);
     }//GEN-LAST:event_menuItemSaveActionPerformed
 
     /**

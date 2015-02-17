@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  */
 public class MediateurSave {
     
-    public void Save (Mediateur mediateur) {
+    public void Save (Mediateur mediateur, String filename) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -89,7 +89,7 @@ public class MediateurSave {
             mediation.appendChild(mediateurElem);
             doc.appendChild(mediation);
 
-            File fichierXml = new File("mediation.xml");
+            File fichierXml = new File(filename);
             XMLGenerator generator = new XMLGenerator();
             generator.generate(doc, fichierXml);
 
