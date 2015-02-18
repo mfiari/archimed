@@ -101,7 +101,7 @@ public class SQLAdapter implements Adapter {
         } else {
             String racine = noeuds[1];
             for (SQLDatasource datasource : this.sources) {
-                if (datasource.isAvailable() && datasource.handle(racine)) {
+                if (datasource.handle(racine)) {
                     return true;
                 }
             }
@@ -214,31 +214,38 @@ public class SQLAdapter implements Adapter {
         }*/
         Element produits = doc.createElement(racine);
         for (SQLDatasource datasource : sources) {
-            if (datasource.isAvailable() && datasource.handle(racine)) {
-                try {
-                    ResultSet result = (ResultSet) datasource.execute(sql);
-                    if (result != null) {
-                        ResultSetMetaData rsmd = result.getMetaData();
-                        int columnCount = rsmd.getColumnCount();
-                        while (result.next()) {
-                            Element elmt;
-                            if (field == null) {
-                                elmt = doc.createElement(element);
-                                for (int i = 1 ; i <= columnCount ; i++) {
-                                    String columnName = rsmd.getColumnName(i);
-                                    String columnValue = result.getString(columnName);
-                                    elmt.setAttribute(columnName, columnValue);
+            if (datasource.isAvailable()) {
+                if (datasource.handle(racine)) {
+                    try {
+                        ResultSet result = (ResultSet) datasource.execute(sql);
+                        if (result != null) {
+                            ResultSetMetaData rsmd = result.getMetaData();
+                            int columnCount = rsmd.getColumnCount();
+                            while (result.next()) {
+                                Element elmt;
+                                if (field == null) {
+                                    elmt = doc.createElement(element);
+                                    for (int i = 1 ; i <= columnCount ; i++) {
+                                        String columnName = rsmd.getColumnName(i);
+                                        String columnValue = result.getString(columnName);
+                                        elmt.setAttribute(columnName, columnValue);
+                                    }
+                                } else {
+                                    elmt = doc.createElement(field);
+                                    elmt.appendChild(doc.createTextNode(result.getString(field)));
                                 }
-                            } else {
-                                elmt = doc.createElement(field);
-                                elmt.appendChild(doc.createTextNode(result.getString(field)));
+                                produits.appendChild(elmt);
                             }
-                            produits.appendChild(elmt);
                         }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(SQLAdapter.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (SQLException ex) {
-                    Logger.getLogger(SQLAdapter.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            } else {
+                Element dts = doc.createElement("datasource");
+                dts.setAttribute("nom", datasource.getName());
+                dts.appendChild(doc.createTextNode("datasource not available"));
+                produits.appendChild(dts);
             }
         }
         parent.appendChild(produits);

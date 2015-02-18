@@ -98,7 +98,7 @@ public class XMLAdapter implements Adapter {
         } else {
             String racine = noeuds[1];
             for (XMLDatasource datasource : this.sources) {
-                if (datasource.isAvailable() && datasource.handle(racine)) {
+                if (datasource.handle(racine)) {
                     return true;
                 }
             }
@@ -109,14 +109,21 @@ public class XMLAdapter implements Adapter {
     @Override
     public void parse(String xpath, Element parent, Document doc) {
         for (XMLDatasource datasource : sources) {
-            if (datasource.isAvailable() && datasource.handle(xpath)) {
-                NodeList nodeList = (NodeList)datasource.execute(xpath);
-                if (nodeList != null) {
-                    for (int i = 0; i < nodeList.getLength(); i++) {
-                        Node node = doc.importNode(nodeList.item(i), true);
-                        parent.appendChild(node);
+            if (datasource.isAvailable()) {
+                if (datasource.handle(xpath)) {
+                    NodeList nodeList = (NodeList)datasource.execute(xpath);
+                    if (nodeList != null) {
+                        for (int i = 0; i < nodeList.getLength(); i++) {
+                            Node node = doc.importNode(nodeList.item(i), true);
+                            parent.appendChild(node);
+                        }
                     }
                 }
+            } else {
+                Element dts = doc.createElement("datasource");
+                dts.setAttribute("nom", datasource.getName());
+                dts.appendChild(doc.createTextNode("datasource not available"));
+                parent.appendChild(dts);
             }
         }
     }

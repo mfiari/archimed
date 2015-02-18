@@ -11,7 +11,7 @@
 				<typeDonnee>xml</typeDonnee>
 				<url>C:\Users\mike\prive\cours\ESGI\5AL\xml\cinema.xml</url>
 				<panne>
-					<temps>60</temps>
+					<temps>20</temps>
 					<duree>30</duree>
 				</panne>
 			</source>

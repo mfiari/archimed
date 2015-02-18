@@ -9,9 +9,7 @@ package esgi.archimed.ui;
 import esgi.archimed.Mediateur;
 import esgi.archimed.adaptaters.Adapter;
 import esgi.archimed.datasources.Datasource;
-import esgi.archimed.panne.Panne;
 import esgi.archimed.utils.MediateurLoad;
-import esgi.archimed.utils.MediateurSave;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
@@ -509,6 +507,7 @@ public class Window extends javax.swing.JFrame {
             File file = fileChooser.getSelectedFile();
             MediateurLoad mediateurLoad = new MediateurLoad();
             Mediateur mdt = mediateurLoad.load(file);
+            this.mediateur.removeAllAdaptateur();
             for (Adapter adp : mdt.getAdapters()) {
                 this.mediateur.addAdapter(adp);
                 for (Datasource dts : adp.getDatasources()) {

@@ -179,10 +179,12 @@ public class CreateDatasource extends javax.swing.JDialog {
         }
         Component [] components = this.panelAdapter.getComponents();
         int index = 0;
+        boolean isCheckboxesSelected = false;
         for (Component component : components) {
             if (component instanceof JCheckBox) {
                 JCheckBox checkBox = (JCheckBox) component;
                 if (checkBox.isSelected()) {
+                    isCheckboxesSelected = true;
                     Adapter adapter = this.mediateur.getAdapters().get(index);
                     if (!adapter.addDatasource(datasource)) {
                         JOptionPane.showMessageDialog(this, "This datasource is not compitible with this adapter.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -191,7 +193,11 @@ public class CreateDatasource extends javax.swing.JDialog {
                 index++;
             }
         }
-        dispose();
+        if (!isCheckboxesSelected) {
+            JOptionPane.showMessageDialog(this, "No adapter selected.", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else {
+            dispose();
+        }
     }//GEN-LAST:event_buttonCreateActionPerformed
 
     private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed

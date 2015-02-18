@@ -46,6 +46,14 @@ public class Mediateur {
         this.pcs.firePropertyChange("addAdapter", adapter, null);
     }
     
+    public void removeAllAdaptateur () {
+        while (!this.adapters.isEmpty()) {
+            Adapter adapter = this.adapters.remove(0);
+            adapter.removeAllDatasource();
+            this.pcs.firePropertyChange("removeAdapter", adapter, null);
+        }
+    }
+    
     public void removeAdapter (int index) {
         Adapter adapter = this.adapters.remove(index);
         adapter.removeAllDatasource();
