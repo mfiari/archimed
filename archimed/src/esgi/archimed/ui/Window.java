@@ -227,7 +227,6 @@ public class Window extends javax.swing.JFrame {
         this.datasource.validate();
         this.datasourceViews.add(new DatasourceView(adapter, datasource, panel, labelEtat));
         this.addDatasourceListener(datasource);
-        //new Panne(datasource, 10, 10).start();
     }
     
     private void removeDatasource(Adapter adapter, Datasource datasource) {
